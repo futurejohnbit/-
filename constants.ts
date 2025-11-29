@@ -2,6 +2,8 @@ import { CharacterId, Character, StoryScene } from './types';
 
 // 背景圖片資源 (Unsplash) - 確保古風、無現代建築、無雪山
 const BG_RAINY_CITY = 'https://images.unsplash.com/photo-1518182170546-0766ce6fec56?q=80&w=1920&auto=format&fit=crop'; // 煙雨濛濛 (序章)
+const BG_Desert = 'https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=1748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' //沙漠
+const BG_home = 'https://images.unsplash.com/photo-1561900077-7cb929361d51?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' //王維家
 const BG_INN_WILLOW = 'https://images.unsplash.com/photo-1446034295857-c39f8844fad4?q=80&w=1920&auto=format&fit=crop'; // 柳樹/綠色 (客舍)
 const BG_INN_INTERIOR = 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1920&auto=format&fit=crop'; // 室內/飲酒 (終章)
 const BG_BAD_ENDING = 'https://images.unsplash.com/photo-1504701954957-12eb79020b84?q=80&w=1920&auto=format&fit=crop'; // 荒涼沙漠 (壞結局)
@@ -41,7 +43,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     id: 'start',
     backgroundUrl: BG_RAINY_CITY,
     characterId: CharacterId.Narrator,
-    text: '【序章：渭城的雨晨】\n地點：渭城客棧\n天氣：清晨小雨\n\n你扮演唐代詩人王維。今天，是你送別摯友元二的日子。',
+    text: '【序章：雨晨】\n地點\n你扮演唐代詩人王維。過幾天，是你送別摯友元二的日子。',
     choices: [
       { id: 'start_act1', text: '開始故事', nextSceneId: 'intro_quiz_destination', isGrowthMindset: false }
     ],
@@ -51,7 +53,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
   // 互動測驗 1 - 目的地 (Where)
   'intro_quiz_destination': {
     id: 'intro_quiz_destination',
-    backgroundUrl: BG_RAINY_CITY,
+    backgroundUrl: BG_home,
     characterId: CharacterId.WangWei,
     text: '（我手裡拿著元二的信...）\n\n元二被皇上派去執行任務，這是一份榮耀，但也充滿挑戰。\n他要去哪裡任職呢？',
     choices: [
@@ -63,7 +65,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
 
   'intro_dest_wrong': {
     id: 'intro_dest_wrong',
-    backgroundUrl: BG_RAINY_CITY,
+    backgroundUrl: BG_Desert,
     characterId: CharacterId.WangWei,
     text: '不對喔。信上寫的是去西域邊疆，保護絲綢之路的安全。那裡可是沙漠遍布的地方。',
     choices: [
@@ -74,7 +76,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
 
   'intro_dest_right': {
     id: 'intro_dest_right',
-    backgroundUrl: BG_RAINY_CITY,
+    backgroundUrl: BG_Desert,
     characterId: CharacterId.WangWei,
     text: '沒錯，就是安西。那裡離長安（西安）有幾千里遠，中間隔著大沙漠。\n這一去，不知何年何月才能再見面。',
     choices: [
