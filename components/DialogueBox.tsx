@@ -21,8 +21,8 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ characterId, text, cho
     setShowOptions(false);
     let index = 0;
     
-    // 調整速度為 150ms，非常慢，適合小學生閱讀
-    const typingSpeed = 150; 
+    // 文字速度設定：120ms (適中偏慢，適合小六閱讀)
+    const typingSpeed = 120; 
     
     const intervalId = setInterval(() => {
       setDisplayedText((prev) => prev + text.charAt(index));
@@ -39,9 +39,12 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ characterId, text, cho
     return () => clearInterval(intervalId);
   }, [text]);
 
+  // Special styling for Poem display or Narrator text
+  const isPoem = text.includes('《送元二使安西》');
+
   return (
     <div className="absolute bottom-0 w-full p-4 z-30 flex justify-center">
-      <div className="w-full max-w-4xl bg-stone-900/95 border-t-4 border-b-4 border-yellow-700/80 rounded-md shadow-2xl p-6 md:p-8 min-h-[250px] relative flex flex-col justify-between">
+      <div className={`w-full max-w-4xl bg-stone-900/95 border-t-4 border-b-4 border-yellow-700/80 rounded-md shadow-2xl p-6 md:p-8 min-h-[250px] relative flex flex-col justify-between ${isPoem ? 'items-center text-center' : ''}`}>
         
         {/* Speaker Name Tag */}
         {!isNarrator && speakerName && (
@@ -51,8 +54,11 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ characterId, text, cho
         )}
 
         {/* Text Content Area */}
-        <div className="flex-grow">
-          <p className={`text-xl md:text-2xl leading-loose tracking-wider font-serif ${isNarrator ? 'text-stone-400 italic text-center' : 'text-stone-100'}`}>
+        <div className="flex-grow flex items-center">
+          <p className={`w-full text-xl md:text-2xl leading-loose tracking-wider font-serif whitespace-pre-line 
+            ${isNarrator ? 'text-yellow-100/90 font-medium text-center' : 'text-stone-100'}
+            ${isPoem ? 'text-3xl font-bold leading-relaxed text-yellow-200' : ''}
+          `}>
             {displayedText}
             {!showOptions && <span className="animate-pulse inline-block ml-1 text-yellow-500">|</span>}
           </p>
@@ -60,7 +66,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ characterId, text, cho
 
         {/* Choices Area (Rendered inside the box at the bottom) */}
         {showOptions && choices && choices.length > 0 && (
-          <div className="mt-6 grid gap-3 animate-fade-in">
+          <div className={`mt-6 grid gap-3 animate-fade-in ${isPoem ? 'w-full' : ''}`}>
             {choices.map((choice) => (
               <button
                 key={choice.id}
