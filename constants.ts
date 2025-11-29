@@ -48,14 +48,14 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     specialEffect: 'rain'
   },
 
-  // 新增：互動測驗 1 - 目的地 (Where)
+  // 互動測驗 1 - 目的地 (Where)
   'intro_quiz_destination': {
     id: 'intro_quiz_destination',
     backgroundUrl: BG_RAINY_CITY,
     characterId: CharacterId.WangWei,
     text: '（我手裡拿著元二的信...）\n\n元二被皇上派去執行任務，這是一份榮耀，但也充滿挑戰。\n他要去哪裡任職呢？',
     choices: [
-      { id: 'q_dest_right', text: '去西邊的「安西都護府」', nextSceneId: 'intro_dest_right', isGrowthMindset: true },
+      { id: 'q_dest_right', text: '去西邊的「安西都護府」', nextSceneId: 'intro_dest_right', isGrowthMindset: false },
       { id: 'q_dest_wrong', text: '去南邊的「煙雨江南」', nextSceneId: 'intro_dest_wrong', isGrowthMindset: false }
     ],
     specialEffect: 'rain'
@@ -76,21 +76,21 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     id: 'intro_dest_right',
     backgroundUrl: BG_RAINY_CITY,
     characterId: CharacterId.WangWei,
-    text: '嗯嗯，看來是在安西。哪裏離長安有幾千里遠，中間隔著大沙漠。\n這一去，不知何年何月才能再見面。',
+    text: '沒錯，就是安西。那裡離長安（西安）有幾千里遠，中間隔著大沙漠。\n這一去，不知何年何月才能再見面。',
     choices: [
       { id: 'next_quiz_loc', text: '思考送別地點...', nextSceneId: 'intro_quiz_location', isGrowthMindset: false }
     ],
     specialEffect: 'rain'
   },
 
-  // 新增：互動測驗 2 - 送別地點 (Location)
+  // 互動測驗 2 - 送別地點 (Location)
   'intro_quiz_location': {
     id: 'intro_quiz_location',
     backgroundUrl: BG_RAINY_CITY,
     characterId: CharacterId.WangWei,
     text: '既然他要往西走，我應該在哪裡為他送行，才能表達我最大的心意呢？',
     choices: [
-      { id: 'q_loc_right', text: '去「渭城」（咸陽），那是西行的起點', nextSceneId: 'intro_loc_right', isGrowthMindset: true },
+      { id: 'q_loc_right', text: '去「渭城」（咸陽），那是西行的起點', nextSceneId: 'intro_loc_right', isGrowthMindset: false },
       { id: 'q_loc_wrong', text: '就在我家門口揮揮手就好', nextSceneId: 'intro_loc_wrong', isGrowthMindset: false }
     ],
     specialEffect: 'rain'
@@ -100,7 +100,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     id: 'intro_loc_wrong',
     backgroundUrl: BG_RAINY_CITY,
     characterId: CharacterId.WangWei,
-    text: '這可是去安西啊！只在門口送別太隨便了。人們送別，通常都會送到城外很遠的地方。',
+    text: '這可是去安西啊！只在門口送別太隨便了。人們送別西行的朋友，通常都會送到城外很遠的渭城。',
     choices: [
       { id: 'retry_loc', text: '重新決定', nextSceneId: 'intro_quiz_location', isGrowthMindset: false }
     ],
@@ -212,7 +212,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
         id: 'q2_right', 
         text: '這景色很美，但也讓我覺得更加捨不得你。柳樹青青，像是在挽留你一樣。', 
         nextSceneId: 'act1_scenery_right', 
-        isGrowthMindset: true 
+        isGrowthMindset: false 
       }
     ]
   },
@@ -284,13 +284,13 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     choices: [
       { 
         id: 'choice_fixed', 
-        text: '這一定是最後一杯了... 你走了，我會非常非常孤單，以後再也沒人陪我喝酒了。', 
+        text: '這一定是最後一杯了... 你走了就是永別了。以後再也沒人陪我喝酒了。', 
         nextSceneId: 'bad_ending', 
         isGrowthMindset: false 
       },
       { 
         id: 'choice_growth', 
-        text: '來！為了我們的友誼，再乾一杯！雖然我們會分開，但我的心陪你一起去安西。祝你建功立業！', 
+        text: '來！為了我們的友誼，再乾一杯吧！雖然我們會分開，但我的心陪你一起去安西。祝你建功立業！', 
         nextSceneId: 'good_ending', 
         isGrowthMindset: true 
       }
