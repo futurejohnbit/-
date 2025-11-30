@@ -15,8 +15,9 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ characterId, text, cho
   const speakerName = characterId ? CHARACTERS[characterId].name : '';
   const isNarrator = characterId === CharacterId.Narrator;
   
-  // Ref to ensure scrolling to bottom if text is long
+  // Refs
   const textContainerRef = useRef<HTMLDivElement>(null);
+  const intervalRef = useRef<number | null>(null);
 
   // Typewriter effect
   useEffect(() => {
@@ -24,19 +25,24 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ characterId, text, cho
     setDisplayedText('');
     setShowOptions(false);
     
+    // Clear any existing interval
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+    }
+    
     let currentIndex = 0;
     const fullText = text || '';
     
     // 文字速度設定：120ms (適中偏慢，適合小六閱讀)
     const typingSpeed = 120; 
     
-    const intervalId = setInterval(() => {
+    intervalRef.current = window.setInterval(() => {
       currentIndex++;
       // 使用 slice 方法確保絕對不會漏字
       setDisplayedText(fullText.slice(0, currentIndex));
       
       if (currentIndex >= fullText.length) {
-        clearInterval(intervalId);
+        if (intervalRef.current) window.clearInterval(intervalRef.current);
         // 打字結束後顯示選項
         setTimeout(() => {
             setShowOptions(true);
@@ -44,8 +50,27 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ characterId, text, cho
       }
     }, typingSpeed);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      if (intervalRef.current) window.clearInterval(intervalRef.current);
+    };
   }, [text]);
+
+  // Spacebar Listener to Skip Typing
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        // 如果選項還沒顯示（代表文字還在跑），則強制完成
+        if (!showOptions) {
+          if (intervalRef.current) window.clearInterval(intervalRef.current);
+          setDisplayedText(text); // 立即顯示全文
+          setShowOptions(true);   // 立即顯示選項
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showOptions, text]); // 依賴 showOptions 來判斷是否需要跳過
 
   // Auto scroll to bottom when text updates
   useEffect(() => {

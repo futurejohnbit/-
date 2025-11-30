@@ -4,10 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>渭城曲：送元二使安西</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel (for JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
       body {
         font-family: 'Noto Serif TC', serif;
@@ -15,7 +27,7 @@
         margin: 0;
         overflow: hidden;
       }
-      /* Custom scrollbar for text history if needed */
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -26,20 +38,27 @@
         background: rgba(255,255,255,0.2);
         border-radius: 4px;
       }
-      .fade-in {
-        animation: fadeIn 1s ease-in-out;
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: rgba(234, 179, 8, 0.3);
+        border-radius: 3px;
       }
       @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
       }
     </style>
   <script type="importmap">
 {
   "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
   }
 }
@@ -47,5 +66,606 @@
 </head>
   <body>
     <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      // ==========================================
+      // TYPES & ENUMS (Simulated for JS)
+      // ==========================================
+      const CharacterId = {
+        WangWei: 'wangwei',
+        YuanEr: 'yuaner',
+        Player: 'player',
+        Narrator: 'narrator',
+        XiaoMing: 'xiaoming'
+      };
+
+      // ==========================================
+      // CONSTANTS (Story Script & Assets)
+      // ==========================================
+      
+      // 背景圖片資源
+      const BG_RAINY_CITY = '/bg_rain.jpg'; 
+      const BG_Desert = 'https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=1748&auto=format&fit=crop'; 
+      const BG_home = 'https://images.unsplash.com/photo-1561900077-7cb929361d51?q=80&w=1740&auto=format&fit=crop';
+      const BG_INN_WILLOW = './image/bg_willow.jpg'; 
+      const BG_INN_INTERIOR = '/bg_inn.jpg';
+      const BG_BAD_ENDING = '/bg_bad.jpg';
+      const BG_GOOD_ENDING = '/bg_good.jpg';
+      const BG_POEM_SCROLL = '/bg_poem.jpg';
+      const BG_CLASSROOM = 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1932&auto=format&fit=crop'; 
+
+      const CHARACTERS = {
+        [CharacterId.WangWei]: {
+          id: CharacterId.WangWei,
+          name: '王維',
+          avatarUrl: '/wangwei.png' 
+        },
+        [CharacterId.YuanEr]: {
+          id: CharacterId.YuanEr,
+          name: '元二',
+          avatarUrl: '/yuaner.png' 
+        },
+        [CharacterId.Player]: {
+          id: CharacterId.Player,
+          name: '王維',
+          avatarUrl: ''
+        },
+        [CharacterId.Narrator]: {
+          id: CharacterId.Narrator,
+          name: '',
+          avatarUrl: ''
+        },
+        [CharacterId.XiaoMing]: {
+          id: CharacterId.XiaoMing,
+          name: '小明',
+          avatarUrl: 'https://api.dicebear.com/9.x/micah/svg?seed=XiaoMing&backgroundColor=b6e3f4' 
+        }
+      };
+
+      const STORY_SCRIPT = {
+        'start': {
+          id: 'start',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.Narrator,
+          text: '【序章：雨晨】\n\n你扮演唐代詩人王維。過幾天，是你送別摯友元二的日子。',
+          choices: [
+            { id: 'start_act1', text: '開始故事', nextSceneId: 'intro_quiz_destination', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'intro_quiz_destination': {
+          id: 'intro_quiz_destination',
+          backgroundUrl: BG_home,
+          characterId: CharacterId.WangWei,
+          text: '（我手裡拿著元二的信...）\n\n元二被皇上派去執行任務，這是一份榮耀，但也充滿挑戰。\n他要去哪裡任職呢？',
+          choices: [
+            { id: 'q_dest_right', text: '去西邊的「安西都護府」', nextSceneId: 'intro_dest_right', isGrowthMindset: false },
+            { id: 'q_dest_wrong', text: '去南邊的「煙雨江南」', nextSceneId: 'intro_dest_wrong', isGrowthMindset: false }
+          ],
+        },
+        'intro_dest_wrong': {
+          id: 'intro_dest_wrong',
+          backgroundUrl: BG_Desert,
+          characterId: CharacterId.WangWei,
+          text: '不對喔。信上寫的是去西域邊疆，保護絲綢之路的安全。那裡可是沙漠遍布的地方。',
+          choices: [
+            { id: 'retry_dest', text: '再想一想', nextSceneId: 'intro_quiz_destination', isGrowthMindset: false }
+          ],
+        },
+        'intro_dest_right': {
+          id: 'intro_dest_right',
+          backgroundUrl: BG_Desert,
+          characterId: CharacterId.WangWei,
+          text: '沒錯，就是安西。那裡離長安（西安）有幾千里遠，中間隔著大沙漠。\n這一去，不知何年何月才能再見面。',
+          choices: [
+            { id: 'next_quiz_loc', text: '思考送別地點...', nextSceneId: 'intro_quiz_location', isGrowthMindset: false }
+          ],
+        },
+        'intro_quiz_location': {
+          id: 'intro_quiz_location',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.WangWei,
+          text: '既然他要往西走，我應該在哪裡為他送行，才能表達我最大的心意呢？',
+          choices: [
+            { id: 'q_loc_right', text: '去「渭城」（咸陽），那是西行的起點', nextSceneId: 'intro_loc_right', isGrowthMindset: false },
+            { id: 'q_loc_wrong', text: '就在我家門口揮揮手就好', nextSceneId: 'intro_loc_wrong', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'intro_loc_wrong': {
+          id: 'intro_loc_wrong',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.WangWei,
+          text: '這可是去安西啊！只在門口送別太隨便了。人們送別西行的朋友，通常都會送到城外很遠的渭城。',
+          choices: [
+            { id: 'retry_loc', text: '重新決定', nextSceneId: 'intro_quiz_location', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'intro_loc_right': {
+          id: 'intro_loc_right',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.WangWei,
+          text: '對！渭城是長安往西走的必經之路。出了渭城，就是荒涼的塞外了。\n\n我明早就趕到了客棧等他。',
+          choices: [
+            { id: 'enter_inn', text: '走進客棧房間', nextSceneId: 'act1_dialogue_1', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'act1_dialogue_1': {
+          id: 'act1_dialogue_1',
+          backgroundUrl: BG_INN_INTERIOR,
+          characterId: CharacterId.YuanEr,
+          text: '（整理著行囊，轉過身來）\n王維兄，時候不早了，我就要出發去安西了。',
+          choices: [
+            { id: 'c1_reply', text: '回應元二', nextSceneId: 'act1_dialogue_2', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'act1_dialogue_2': {
+          id: 'act1_dialogue_2',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.WangWei,
+          text: '我知道。路途遙遠又危險，你要多多保重啊。',
+          choices: [
+            { id: 'c2_next', text: '聽元二說...', nextSceneId: 'act1_location_quiz', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'act1_location_quiz': {
+          id: 'act1_location_quiz',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.YuanEr,
+          text: '多謝王維兄特地送到這裡。渭城（咸陽）離長安（西安）也不近。你爲什麼要送我到渭城呢？',
+          choices: [
+            { 
+              id: 'q1_right', 
+              text: '這裡是往西走的起點，出了這裡，就要離開我們熟悉的中原了。', 
+              nextSceneId: 'act1_location_right', 
+              isGrowthMindset: false
+            },
+            { 
+              id: 'q1_wrong', 
+              text: '渭城風景優美，我順路過來看看。', 
+              nextSceneId: 'act1_location_wrong', 
+              isGrowthMindset: false 
+            }
+          ],
+          specialEffect: 'rain'
+        },
+        'act1_location_wrong': {
+          id: 'act1_location_wrong',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.YuanEr,
+          text: '（愣了一下）呃... 我看周圍很多送別的人，這裏應該是人們習慣最後送別的地方吧。',
+          choices: [
+            { id: 'q1_retry', text: '好像是喔', nextSceneId: 'act1_location_right', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'act1_location_right': {
+          id: 'act1_location_right',
+          backgroundUrl: BG_RAINY_CITY,
+          characterId: CharacterId.YuanEr,
+          text: '（有些感傷）出了陽關，往西走就真的是完全陌生的世界了。',
+          choices: [
+            { id: 'to_scenery', text: '看向窗外', nextSceneId: 'act1_scenery_observe', isGrowthMindset: false }
+          ],
+          specialEffect: 'rain'
+        },
+        'act1_scenery_observe': {
+          id: 'act1_scenery_observe',
+          backgroundUrl: BG_INN_WILLOW,
+          characterId: CharacterId.WangWei,
+          text: '（你看向窗外）\n看，今天早上的雨把路上的灰塵都洗乾淨了（浥輕塵），客棧旁邊的柳樹經過雨水沖洗，顏色看起來特別清新（柳色新）。',
+          choices: [
+            { id: 'scenery_reply', text: '等待元二回應', nextSceneId: 'act1_scenery_quiz', isGrowthMindset: false }
+          ]
+        },
+        'act1_scenery_quiz': {
+          id: 'act1_scenery_quiz',
+          backgroundUrl: BG_INN_WILLOW,
+          characterId: CharacterId.YuanEr,
+          text: '這柳樹真綠啊... 讓我想起以前我們在長安的日子。王維兄，你看這景色怎麼樣？',
+          choices: [
+            { 
+              id: 'q2_wrong', 
+              text: '下雨天到處濕答答的，踩得滿腳泥，真麻煩。', 
+              nextSceneId: 'act1_scenery_wrong', 
+              isGrowthMindset: false 
+            },
+            { 
+              id: 'q2_right', 
+              text: '這景色很美，但也讓我覺得更加捨不得你。柳樹青青，像是在挽留你一樣。', 
+              nextSceneId: 'act1_scenery_right', 
+              isGrowthMindset: false 
+            }
+          ]
+        },
+        'act1_scenery_wrong': {
+          id: 'act1_scenery_wrong',
+          backgroundUrl: BG_INN_WILLOW,
+          characterId: CharacterId.YuanEr,
+          text: '這... 我們即將分別，王維兄怎麼只在意腳下的泥土呢？',
+          choices: [
+            { id: 'q2_retry', text: '重新觀察並表達情感', nextSceneId: 'act1_scenery_quiz', isGrowthMindset: false }
+          ]
+        },
+        'act1_scenery_right': {
+          id: 'act1_scenery_right',
+          backgroundUrl: BG_INN_WILLOW,
+          characterId: CharacterId.YuanEr,
+          text: '（感動地看著你）知我者，王維兄也。這風景，讓我更捨不得離開啊。唉！',
+          choices: [
+            { id: 'prologue_done', text: '隨從催促出發...', nextSceneId: 'prologue_end', isGrowthMindset: false }
+          ]
+        },
+        'prologue_end': {
+          id: 'prologue_end',
+          backgroundUrl: BG_INN_INTERIOR,
+          characterId: CharacterId.Narrator,
+          text: '【🎉 序章已通關】\n你已經回顧了送別的背景與景物：\n「渭城朝雨浥輕塵，客舍青青柳色新」\n\n最後的時刻到了，王維會對元二說什麼呢？\n（請先暫停遊戲，等待老師講課）',
+          choices: [
+            { id: 'pause_game', text: '繼續遊戲', nextSceneId: 'act2_intro', isGrowthMindset: false }
+          ],
+          specialEffect: 'gold_glow'
+        },
+        'act2_intro': {
+          id: 'act2_intro',
+          backgroundUrl: BG_INN_INTERIOR,
+          characterId: CharacterId.Narrator,
+          text: '【終章：最後的抉擇】\n課堂繼續。\n元二已經站起身，馬車就在門外等候。這是最後說話的機會了。',
+          choices: [
+            { id: 'continue_act2', text: '回到客棧', nextSceneId: 'act2_dialogue_1', isGrowthMindset: false }
+          ]
+        },
+        'act2_dialogue_1': {
+          id: 'act2_dialogue_1',
+          backgroundUrl: BG_INN_INTERIOR,
+          characterId: CharacterId.YuanEr,
+          text: '王維兄，酒已喝乾，我該走了。這一去，不知何年何月才能再見...',
+          choices: [
+            { id: 'c3_pour_wine', text: '端起酒壺，倒滿最後一杯酒', nextSceneId: 'act2_core_choice', isGrowthMindset: false }
+          ]
+        },
+        'act2_core_choice': {
+          id: 'act2_core_choice',
+          backgroundUrl: BG_INN_INTERIOR,
+          characterId: CharacterId.WangWei,
+          text: '（你看著滿杯的酒，心裡五味雜陳。作為好朋友，這最後一句話該說什麼？）',
+          choices: [
+            { 
+              id: 'choice_fixed', 
+              text: '這一定是最後一杯了... 你走了就是永別了。以後再也沒人陪我喝酒了。', 
+              nextSceneId: 'bad_ending', 
+              isGrowthMindset: false 
+            },
+            { 
+              id: 'choice_growth', 
+              text: '來！為了我們的友誼，再乾一杯吧！雖然我們會分開，但我的心陪你一起去安西。祝你建功立業！', 
+              nextSceneId: 'good_ending', 
+              isGrowthMindset: true 
+            }
+          ]
+        },
+        'bad_ending': {
+          id: 'bad_ending',
+          backgroundUrl: BG_BAD_ENDING,
+          characterId: CharacterId.Narrator,
+          text: '【結局：相忘於江湖】\n元二聽了你的話，帶著沉重的心情離開了。\n\n路途遙遠，因為離別時太過傷感，兩人都覺得這段友誼充滿了痛苦。漸漸地，聯繫越來越少。\n在遙遠的安西，元二常常感到孤獨；而王維也失去了一位最好的朋友。',
+          choices: [
+              { id: 'read_poem_bad', text: '回味這首詩', nextSceneId: 'poem_display_final', isGrowthMindset: false }
+          ], 
+          specialEffect: 'fade_black'
+        },
+        'good_ending': {
+          id: 'good_ending',
+          backgroundUrl: BG_GOOD_ENDING,
+          characterId: CharacterId.Narrator,
+          text: '【結局：天涯若比鄰】\n元二聽了你的話，感動地喝下這杯酒，帶著滿滿的勇氣踏上了旅程！\n\n雖然相隔萬里，但你們經常寫信分享生活。元二在安西努力工作。\n你們的友誼，因為這份祝福，變得更深厚、更牢固了。',
+          choices: [
+              { id: 'read_poem_good', text: '吟誦這首千古名詩', nextSceneId: 'poem_display_final', isGrowthMindset: false }
+          ], 
+          specialEffect: 'gold_glow'
+        },
+        'poem_display_final': {
+          id: 'poem_display_final',
+          backgroundUrl: BG_POEM_SCROLL,
+          characterId: CharacterId.Narrator,
+          text: '《送元二使安西》\n唐·王維\n\n渭城朝雨浥輕塵，\n客舍青青柳色新。\n勸君更盡一杯酒，\n西出陽關無故人。',
+          choices: [
+            { id: 'goto_epilogue', text: '進入現代篇：李金小學的畢業季', nextSceneId: 'epilogue_start', isGrowthMindset: false }
+          ],
+          specialEffect: 'gold_glow'
+        },
+        'epilogue_start': {
+          id: 'epilogue_start',
+          backgroundUrl: BG_CLASSROOM,
+          characterId: CharacterId.Narrator,
+          text: '時光飛逝，畫面漸漸模糊...\n\n當你再次睜開眼時，你發現自己正坐在李金小學的課室裡。\n剛剛那場唐代的送別，似乎只是一場生動的課堂體驗。',
+          choices: [
+            { id: 'epi_look_around', text: '看向旁邊的同學', nextSceneId: 'epilogue_dialogue_1', isGrowthMindset: false }
+          ]
+        },
+        'epilogue_dialogue_1': {
+          id: 'epilogue_dialogue_1',
+          backgroundUrl: BG_CLASSROOM,
+          characterId: CharacterId.XiaoMing,
+          text: '（小明趴在桌上，看著窗外，長長地嘆了一口氣）\n唉...',
+          choices: [
+            { id: 'epi_ask_why', text: '小明，你怎麼了？', nextSceneId: 'epilogue_dialogue_2', isGrowthMindset: false }
+          ]
+        },
+        'epilogue_dialogue_2': {
+          id: 'epilogue_dialogue_2',
+          backgroundUrl: BG_CLASSROOM,
+          characterId: CharacterId.XiaoMing,
+          text: '剛才老師講了王維和元二的故事，很感人，讓我想到了我們。\n\n快畢業了，大家都分派到不同的中學。想到要和好朋友分開，去一個完全陌生的新學校，我就覺得好害怕，好捨不得。',
+          choices: [
+            { id: 'epi_comfort_intro', text: '（運用剛才學到的成長思維安慰他）', nextSceneId: 'epilogue_core_choice', isGrowthMindset: false }
+          ]
+        },
+        'epilogue_core_choice': {
+          id: 'epilogue_core_choice',
+          backgroundUrl: BG_CLASSROOM,
+          characterId: CharacterId.Player,
+          text: '看著焦慮的小明，你會怎麼安慰他？',
+          choices: [
+            { 
+              id: 'epi_fixed', 
+              text: '是啊，分開真的很難過。上了中學大家都會變，以後肯定會很孤單的。', 
+              nextSceneId: 'epilogue_bad', 
+              isGrowthMindset: false 
+            },
+            { 
+              id: 'epi_growth', 
+              text: '別怕！就像王維對元二那樣，雖然我們不在同一間學校，但友誼不會變！新學校也是像安西一樣充滿挑戰的新開始啊！', 
+              nextSceneId: 'epilogue_good', 
+              isGrowthMindset: true 
+            }
+          ]
+        },
+        'epilogue_bad': {
+          id: 'epilogue_bad',
+          backgroundUrl: BG_CLASSROOM,
+          characterId: CharacterId.XiaoMing,
+          text: '你說得對... 唉，我真不想畢業。\n\n（小明的心情依然很低落，畢業的氣氛變得更加沈重了。）',
+          choices: [
+            { id: 'epi_retry', text: '重新鼓勵他', nextSceneId: 'epilogue_core_choice', isGrowthMindset: false }
+          ],
+          specialEffect: 'fade_black'
+        },
+        'epilogue_good': {
+          id: 'epilogue_good',
+          backgroundUrl: BG_CLASSROOM,
+          characterId: CharacterId.XiaoMing,
+          text: '（小明抬起頭，眼睛亮了起來）\n你說得對！王維他們隔著沙漠都能做朋友，我們現在還有手機呢！\n\n謝謝你，我現在覺得去新中學也沒那麼可怕了，那是我建立新「功業的地方！',
+          choices: [
+            { id: 'the_end', text: '【全劇終】重新開始', nextSceneId: 'start', isGrowthMindset: false }
+          ],
+          specialEffect: 'gold_glow'
+        }
+      };
+
+      // ==========================================
+      // COMPONENT: GameScene
+      // ==========================================
+      const GameScene = ({ backgroundUrl, activeCharacterId, specialEffect }) => {
+        const activeCharacter = activeCharacterId ? CHARACTERS[activeCharacterId] : undefined;
+        // Logic: Show avatar if it's not the Narrator and not Wang Wei (First Person View), OR if it's Xiao Ming
+        const shouldShowAvatar = activeCharacter && activeCharacterId !== CharacterId.Narrator && activeCharacterId !== CharacterId.WangWei;
+
+        return (
+          <div className="absolute inset-0 w-full h-full overflow-hidden bg-black">
+            {/* Background Layer */}
+            <div 
+              className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-1000 ease-in-out transform scale-105"
+              style={{ backgroundImage: `url(${backgroundUrl})` }}
+            >
+              <div className="absolute inset-0 bg-black/40" />
+            </div>
+
+            {/* Special Effects */}
+            {specialEffect === 'rain' && (
+              <div className="absolute inset-0 pointer-events-none bg-[url('https://media.giphy.com/media/t7Qb8655Z1VfBGr5XB/giphy.gif')] opacity-30 bg-cover mix-blend-screen z-20" />
+            )}
+            
+            {specialEffect === 'gold_glow' && (
+              <div className="absolute inset-0 pointer-events-none animate-pulse bg-yellow-500/10 z-20" />
+            )}
+
+            {/* Character Layer */}
+            {shouldShowAvatar && activeCharacter.avatarUrl && (
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 flex items-end justify-center h-full pb-[180px] pointer-events-none transition-opacity duration-500">
+                <img 
+                  src={activeCharacter.avatarUrl} 
+                  alt={activeCharacter.name} 
+                  className="max-h-[70vh] w-auto object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] filter brightness-90"
+                />
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      // ==========================================
+      // COMPONENT: DialogueBox
+      // ==========================================
+      const DialogueBox = ({ characterId, text, choices, onOptionSelected }) => {
+        const [displayedText, setDisplayedText] = useState('');
+        const [showOptions, setShowOptions] = useState(false);
+        const speakerName = characterId ? CHARACTERS[characterId].name : '';
+        const isNarrator = characterId === CharacterId.Narrator;
+        
+        const textContainerRef = useRef(null);
+        const intervalRef = useRef(null);
+
+        useEffect(() => {
+          setDisplayedText('');
+          setShowOptions(false);
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          
+          let currentIndex = 0;
+          const fullText = text || '';
+          const typingSpeed = 120; 
+          
+          intervalRef.current = setInterval(() => {
+            currentIndex++;
+            setDisplayedText(fullText.slice(0, currentIndex));
+            
+            if (currentIndex >= fullText.length) {
+              if (intervalRef.current) clearInterval(intervalRef.current);
+              setTimeout(() => {
+                  setShowOptions(true);
+              }, 500);
+            }
+          }, typingSpeed);
+
+          return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+          };
+        }, [text]);
+
+        // Spacebar listener
+        useEffect(() => {
+          const handleKeyDown = (e) => {
+            if (e.code === 'Space') {
+              if (!showOptions) {
+                if (intervalRef.current) clearInterval(intervalRef.current);
+                setDisplayedText(text);
+                setShowOptions(true);
+              }
+            }
+          };
+          window.addEventListener('keydown', handleKeyDown);
+          return () => window.removeEventListener('keydown', handleKeyDown);
+        }, [showOptions, text]);
+
+        useEffect(() => {
+          if (textContainerRef.current) {
+              textContainerRef.current.scrollTop = textContainerRef.current.scrollHeight;
+          }
+        }, [displayedText]);
+
+        const isPoem = text.includes('《送元二使安西》');
+
+        return (
+          <div className="absolute bottom-0 w-full p-4 z-30 flex justify-center">
+            <div className={`w-full max-w-4xl bg-stone-900/95 border-t-4 border-b-4 border-yellow-700/80 rounded-md shadow-2xl p-6 md:p-8 min-h-[250px] max-h-[60vh] relative flex flex-col justify-between ${isPoem ? 'items-center text-center' : ''}`}>
+              
+              {!isNarrator && speakerName && (
+                <div className="absolute -top-5 left-8 bg-stone-200 text-stone-900 px-6 py-1 text-xl font-bold border-2 border-stone-800 shadow-md transform -skew-x-12 z-40">
+                   <span className="block transform skew-x-12">{speakerName}</span>
+                </div>
+              )}
+
+              <div 
+                  ref={textContainerRef}
+                  className="flex-grow overflow-y-auto pr-2 custom-scrollbar"
+              >
+                <p className={`w-full text-xl md:text-2xl leading-loose tracking-wider font-serif whitespace-pre-line 
+                  ${isNarrator ? 'text-yellow-100/90 font-medium text-center' : 'text-stone-100'}
+                  ${isPoem ? 'text-3xl font-bold leading-relaxed text-yellow-200' : ''}
+                `}>
+                  {displayedText}
+                  {!showOptions && <span className="animate-pulse inline-block ml-1 text-yellow-500">|</span>}
+                </p>
+              </div>
+
+              {showOptions && choices && choices.length > 0 && (
+                <div className={`mt-6 grid gap-3 animate-fade-in flex-shrink-0 ${isPoem ? 'w-full' : ''}`}>
+                  {choices.map((choice) => (
+                    <button
+                      key={choice.id}
+                      onClick={() => onOptionSelected(choice)}
+                      className="w-full text-left bg-stone-800 hover:bg-yellow-900/40 border border-stone-600 hover:border-yellow-500 text-stone-200 py-3 px-5 rounded transition-all duration-200 group"
+                    >
+                      <span className="text-yellow-500 mr-2 group-hover:text-yellow-300">➤</span>
+                      <span className="text-lg md:text-xl">{choice.text}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      // ==========================================
+      // COMPONENT: App
+      // ==========================================
+      const App = () => {
+        const [gameState, setGameState] = useState({
+          currentSceneId: 'start',
+          growthScore: 0,
+          history: [],
+          showFeedback: false,
+          isThinking: false
+        });
+        
+        const currentScene = STORY_SCRIPT[gameState.currentSceneId];
+
+        const handleChoiceSelect = (choice) => {
+          const newScore = choice.isGrowthMindset ? gameState.growthScore + 1 : gameState.growthScore;
+          const showFeedback = choice.isGrowthMindset;
+
+          setGameState(prev => ({
+            ...prev,
+            currentSceneId: choice.nextSceneId,
+            growthScore: newScore,
+            history: [...prev.history, prev.currentSceneId],
+            showFeedback: showFeedback
+          }));
+        };
+
+        useEffect(() => {
+          if (gameState.showFeedback) {
+            const timer = setTimeout(() => {
+              setGameState(prev => ({ ...prev, showFeedback: false }));
+            }, 3000);
+            return () => clearTimeout(timer);
+          }
+        }, [gameState.showFeedback]);
+
+        if (!currentScene) return <div className="text-white">Error: Scene not found</div>;
+
+        return (
+          <div className="relative w-screen h-screen bg-black overflow-hidden font-serif select-none">
+            <GameScene 
+              backgroundUrl={currentScene.backgroundUrl}
+              activeCharacterId={currentScene.characterId}
+              specialEffect={currentScene.specialEffect}
+            />
+
+            {gameState.showFeedback && (
+              <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 animate-[bounce_1s_infinite]">
+                <div className="bg-gradient-to-r from-yellow-600/80 to-yellow-800/80 text-white px-8 py-4 rounded-full border-2 border-yellow-300 shadow-[0_0_30px_rgba(234,179,8,0.6)] backdrop-blur-md">
+                   <span className="text-2xl font-bold tracking-widest">✨ 成長值 +1</span>
+                </div>
+              </div>
+            )}
+
+             <DialogueBox 
+                key={currentScene.id} 
+                characterId={currentScene.characterId}
+                text={currentScene.text}
+                choices={currentScene.choices}
+                onOptionSelected={handleChoiceSelect}
+             />
+            
+            <div className="absolute top-4 right-4 z-40 flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <span className="text-stone-300 text-sm">成長值: {gameState.growthScore}</span>
+            </div>
+          </div>
+        );
+      };
+
+      // Mount
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
   </body>
 </html>

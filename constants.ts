@@ -1,17 +1,20 @@
 import { CharacterId, Character, StoryScene } from './types';
 
 // 背景圖片資源 (Unsplash) - 確保古風、無現代建築、無雪山
-const BG_RAINY_CITY = 'https://images.unsplash.com/photo-1518182170546-0766ce6fec56?q=80&w=1920&auto=format&fit=crop'; // 煙雨濛濛 (序章)
-const BG_Desert = 'https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=1748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' //沙漠
-const BG_home = 'https://images.unsplash.com/photo-1561900077-7cb929361d51?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' //王維家
+const BG_RAINY_CITY = '/bg_rain.jpg'; // 煙雨濛濛 (序章)
+const BG_Desert = 'https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=1748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; //沙漠
+const BG_home = 'https://images.unsplash.com/photo-1561900077-7cb929361d51?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; //王維家
 
 // ★★★ 已更新路徑：請確保根目錄下有一個名為 image 的資料夾，且裡面有 bg_willow.jpg ★★★
 const BG_INN_WILLOW = './image/bg_willow.jpg'; 
 
-const BG_INN_INTERIOR = './images/inn.jpg'; // 室內/飲酒 (終章) - 假設這張還在根目錄，如果也在 image 資料夾請自行加 ./image/
-const BG_BAD_ENDING = 'https://images.unsplash.com/photo-1504701954957-12eb79020b84?q=80&w=1920&auto=format&fit=crop'; // 荒涼沙漠 (壞結局)
-const BG_GOOD_ENDING = 'https://images.unsplash.com/photo-1533552062322-83966a496224?q=80&w=1920&auto=format&fit=crop'; // 陽光/希望/書信 (好結局)
-const BG_POEM_SCROLL = 'https://images.unsplash.com/photo-1516962248584-277a32af9bf8?q=80&w=1920&auto=format&fit=crop'; // 紙張/總結
+const BG_INN_INTERIOR = '/bg_inn.jpg'; // 室內/飲酒 (終章)
+const BG_BAD_ENDING = '/bg_bad.jpg'; // 荒涼沙漠 (壞結局)
+const BG_GOOD_ENDING = '/bg_good.jpg'; // 陽光/希望/書信 (好結局)
+const BG_POEM_SCROLL = '/bg_poem.jpg'; // 紙張/總結
+
+// 新增：現代課室背景 (外篇)
+const BG_CLASSROOM = 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1932&auto=format&fit=crop'; 
 
 export const CHARACTERS: Record<CharacterId, Character> = {
   [CharacterId.WangWei]: {
@@ -33,6 +36,12 @@ export const CHARACTERS: Record<CharacterId, Character> = {
     id: CharacterId.Narrator,
     name: '',
     avatarUrl: ''
+  },
+  // 新增：現代同學角色
+  [CharacterId.XiaoMing]: {
+    id: CharacterId.XiaoMing,
+    name: '小明',
+    avatarUrl: 'https://api.dicebear.com/9.x/micah/svg?seed=XiaoMing&backgroundColor=b6e3f4' // 使用線上生成的現代學生頭像，您也可以上載 xiaoming.png 並替換此處
   }
 };
 
@@ -320,21 +329,99 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     id: 'good_ending',
     backgroundUrl: BG_GOOD_ENDING,
     characterId: CharacterId.Narrator,
-    text: '【結局：天涯若比鄰】\n元二聽了你的話，感動地喝下這杯酒，帶著滿滿的勇氣踏上了旅程！\n\n雖然相隔萬里，但你們經常寫信分享生活。元二在安西努力工作，他永遠記得你那句「勸君更盡一杯酒」。\n你們的友誼，因為這份祝福，變得更深厚、更牢固了。',
+    text: '【結局：天涯若比鄰】\n元二聽了你的話，感動地喝下這杯酒，帶著滿滿的勇氣踏上了旅程！\n\n雖然相隔萬里，但你們經常寫信分享生活。元二在安西努力工作。\n你們的友誼，因為這份祝福，變得更深厚、更牢固了。',
     choices: [
         { id: 'read_poem_good', text: '吟誦這首千古名詩', nextSceneId: 'poem_display_final', isGrowthMindset: false }
     ], 
     specialEffect: 'gold_glow'
   },
 
-  // 最終詩詞展示
+  // 最終詩詞展示 (修改連接點 -> 外篇)
   'poem_display_final': {
     id: 'poem_display_final',
     backgroundUrl: BG_POEM_SCROLL,
     characterId: CharacterId.Narrator,
     text: '《送元二使安西》\n唐·王維\n\n渭城朝雨浥輕塵，\n客舍青青柳色新。\n勸君更盡一杯酒，\n西出陽關無故人。',
     choices: [
-      { id: 'restart', text: '回到首頁', nextSceneId: 'start', isGrowthMindset: false }
+      { id: 'goto_epilogue', text: '進入現代篇：李金小學的畢業季', nextSceneId: 'epilogue_start', isGrowthMindset: false }
+    ],
+    specialEffect: 'gold_glow'
+  },
+
+  // ==========================================
+  // 外篇：李金小學的畢業季 (遷移學習)
+  // ==========================================
+
+  'epilogue_start': {
+    id: 'epilogue_start',
+    backgroundUrl: BG_CLASSROOM, // 現代課室
+    characterId: CharacterId.Narrator,
+    text: '時光飛逝，畫面漸漸模糊...\n\n當你再次睜開眼時，你發現自己正坐在李金小學的課室裡。\n剛剛那場唐代的送別，似乎只是一場生動的課堂體驗。',
+    choices: [
+      { id: 'epi_look_around', text: '看向旁邊的同學', nextSceneId: 'epilogue_dialogue_1', isGrowthMindset: false }
+    ]
+  },
+
+  'epilogue_dialogue_1': {
+    id: 'epilogue_dialogue_1',
+    backgroundUrl: BG_CLASSROOM,
+    characterId: CharacterId.XiaoMing,
+    text: '（小明趴在桌上，看著窗外，長長地嘆了一口氣）\n唉...',
+    choices: [
+      { id: 'epi_ask_why', text: '小明，你怎麼了？', nextSceneId: 'epilogue_dialogue_2', isGrowthMindset: false }
+    ]
+  },
+
+  'epilogue_dialogue_2': {
+    id: 'epilogue_dialogue_2',
+    backgroundUrl: BG_CLASSROOM,
+    characterId: CharacterId.XiaoMing,
+    text: '剛才老師講了王維和元二的故事，很感人，讓我想到了我們。\n\n快畢業了，大家都分派到不同的中學。想到要和好朋友分開，去一個完全陌生的新學校，我就覺得好害怕，好捨不得。',
+    choices: [
+      { id: 'epi_comfort_intro', text: '（運用剛才學到的成長思維安慰他）', nextSceneId: 'epilogue_core_choice', isGrowthMindset: false }
+    ]
+  },
+
+  // 外篇核心抉擇：應用遷移
+  'epilogue_core_choice': {
+    id: 'epilogue_core_choice',
+    backgroundUrl: BG_CLASSROOM,
+    characterId: CharacterId.Player, // 此時玩家身份是同學
+    text: '看著焦慮的小明，你會怎麼安慰他？',
+    choices: [
+      { 
+        id: 'epi_fixed', 
+        text: '是啊，分開真的很難過。上了中學大家都會變，以後肯定會很孤單的。', 
+        nextSceneId: 'epilogue_bad', 
+        isGrowthMindset: false 
+      },
+      { 
+        id: 'epi_growth', 
+        text: '別怕！就像王維對元二那樣，雖然我們不在同一間學校，但友誼不會變！新學校也是像安西一樣充滿挑戰的新開始啊！', 
+        nextSceneId: 'epilogue_good', 
+        isGrowthMindset: true 
+      }
+    ]
+  },
+
+  'epilogue_bad': {
+    id: 'epilogue_bad',
+    backgroundUrl: BG_CLASSROOM,
+    characterId: CharacterId.XiaoMing,
+    text: '你說得對... 唉，我真不想畢業。\n\n（小明的心情依然很低落，畢業的氣氛變得更加沈重了。）',
+    choices: [
+      { id: 'epi_retry', text: '重新鼓勵他', nextSceneId: 'epilogue_core_choice', isGrowthMindset: false }
+    ],
+    specialEffect: 'fade_black'
+  },
+
+  'epilogue_good': {
+    id: 'epilogue_good',
+    backgroundUrl: BG_CLASSROOM,
+    characterId: CharacterId.XiaoMing,
+    text: '（小明抬起頭，眼睛亮了起來）\n你說得對！王維他們隔著沙漠都能做朋友，我們現在還有手機呢！\n\n謝謝你，我現在覺得去新中學也沒那麼可怕了，那是我建立新「功業的地方！',
+    choices: [
+      { id: 'the_end', text: '【全劇終】重新開始', nextSceneId: 'start', isGrowthMindset: false }
     ],
     specialEffect: 'gold_glow'
   }

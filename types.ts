@@ -2,7 +2,8 @@ export enum CharacterId {
   WangWei = 'wangwei',
   YuanEr = 'yuaner',
   Player = 'player',
-  Narrator = 'narrator'
+  Narrator = 'narrator',
+  XiaoMing = 'xiaoming' // 新增現代同學角色
 }
 
 export interface Character {
