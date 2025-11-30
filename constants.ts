@@ -4,8 +4,11 @@ import { CharacterId, Character, StoryScene } from './types';
 const BG_RAINY_CITY = 'https://images.unsplash.com/photo-1518182170546-0766ce6fec56?q=80&w=1920&auto=format&fit=crop'; // 煙雨濛濛 (序章)
 const BG_Desert = 'https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=1748&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' //沙漠
 const BG_home = 'https://images.unsplash.com/photo-1561900077-7cb929361d51?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' //王維家
-const BG_INN_WILLOW = 'https://images.unsplash.com/photo-1446034295857-c39f8844fad4?q=80&w=1920&auto=format&fit=crop'; // 柳樹/綠色 (客舍)
-const BG_INN_INTERIOR = 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1920&auto=format&fit=crop'; // 室內/飲酒 (終章)
+
+// ★★★ 已更新路徑：請確保根目錄下有一個名為 image 的資料夾，且裡面有 bg_willow.jpg ★★★
+const BG_INN_WILLOW = './image/bg_willow.jpg'; 
+
+const BG_INN_INTERIOR = './images/inn.jpg'; // 室內/飲酒 (終章) - 假設這張還在根目錄，如果也在 image 資料夾請自行加 ./image/
 const BG_BAD_ENDING = 'https://images.unsplash.com/photo-1504701954957-12eb79020b84?q=80&w=1920&auto=format&fit=crop'; // 荒涼沙漠 (壞結局)
 const BG_GOOD_ENDING = 'https://images.unsplash.com/photo-1533552062322-83966a496224?q=80&w=1920&auto=format&fit=crop'; // 陽光/希望/書信 (好結局)
 const BG_POEM_SCROLL = 'https://images.unsplash.com/photo-1516962248584-277a32af9bf8?q=80&w=1920&auto=format&fit=crop'; // 紙張/總結
@@ -14,12 +17,12 @@ export const CHARACTERS: Record<CharacterId, Character> = {
   [CharacterId.WangWei]: {
     id: CharacterId.WangWei,
     name: '王維',
-    avatarUrl: '/wangwei.png'
+    avatarUrl: '/wangwei.png' // 如果您也把人物移到了 image 資料夾，請改為 './image/wangwei.png'
   },
   [CharacterId.YuanEr]: {
     id: CharacterId.YuanEr,
     name: '元二',
-    avatarUrl: '/yuaner.png'
+    avatarUrl: '/yuaner.png' // 如果您也把人物移到了 image 資料夾，請改為 './image/yuaner.png'
   },
   [CharacterId.Player]: {
     id: CharacterId.Player,
@@ -43,7 +46,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     id: 'start',
     backgroundUrl: BG_RAINY_CITY,
     characterId: CharacterId.Narrator,
-    text: '【序章：雨晨】\n地點\n你扮演唐代詩人王維。過幾天，是你送別摯友元二的日子。',
+    text: '【序章：雨晨】\n\n你扮演唐代詩人王維。過幾天，是你送別摯友元二的日子。',
     choices: [
       { id: 'start_act1', text: '開始故事', nextSceneId: 'intro_quiz_destination', isGrowthMindset: false }
     ],
@@ -60,7 +63,6 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
       { id: 'q_dest_right', text: '去西邊的「安西都護府」', nextSceneId: 'intro_dest_right', isGrowthMindset: false },
       { id: 'q_dest_wrong', text: '去南邊的「煙雨江南」', nextSceneId: 'intro_dest_wrong', isGrowthMindset: false }
     ],
-    specialEffect: 'rain'
   },
 
   'intro_dest_wrong': {
@@ -71,7 +73,6 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     choices: [
       { id: 'retry_dest', text: '再想一想', nextSceneId: 'intro_quiz_destination', isGrowthMindset: false }
     ],
-    specialEffect: 'rain'
   },
 
   'intro_dest_right': {
@@ -82,7 +83,6 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     choices: [
       { id: 'next_quiz_loc', text: '思考送別地點...', nextSceneId: 'intro_quiz_location', isGrowthMindset: false }
     ],
-    specialEffect: 'rain'
   },
 
   // 互動測驗 2 - 送別地點 (Location)
@@ -122,7 +122,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
 
   'act1_dialogue_1': {
     id: 'act1_dialogue_1',
-    backgroundUrl: BG_RAINY_CITY,
+    backgroundUrl: BG_INN_INTERIOR,
     characterId: CharacterId.YuanEr,
     text: '（整理著行囊，轉過身來）\n王維兄，時候不早了，我就要出發去安西了。',
     choices: [
@@ -206,7 +206,7 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     choices: [
       { 
         id: 'q2_wrong', 
-        text: '下雨天到處溼答答的，踩得滿腳泥，真麻煩。', 
+        text: '下雨天到處濕答答的，踩得滿腳泥，真麻煩。', 
         nextSceneId: 'act1_scenery_wrong', 
         isGrowthMindset: false 
       },
