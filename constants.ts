@@ -20,7 +20,7 @@ export const CHARACTERS: Record<CharacterId, Character> = {
   [CharacterId.WangWei]: {
     id: CharacterId.WangWei,
     name: '王維',
-    avatarUrl: '/wangwei.png' // 如果您也把人物移到了 image 資料夾，請改為 './image/wangwei.png'
+    avatarUrl: 'https://i.pinimg.com/736x/8a/8a/90/8a8a906c9faabcbecd1c61acaf4022b6.jpg'
   },
   [CharacterId.YuanEr]: {
     id: CharacterId.YuanEr,
@@ -257,86 +257,16 @@ export const STORY_SCRIPT: Record<string, StoryScene> = {
     characterId: CharacterId.Narrator,
     text: '【🎉 序章已通關】\n你已經回顧了送別的背景與景物：\n「渭城朝雨浥輕塵，客舍青青柳色新」\n\n最後的時刻到了，王維會對元二說什麼呢？\n（請先暫停遊戲，等待老師講課）',
     choices: [
-      { id: 'pause_game', text: '繼續遊戲', nextSceneId: 'act2_intro', isGrowthMindset: false }
+      { id: 'show_poem', text: '查看詩詞', nextSceneId: 'poem_display_final', isGrowthMindset: false }
     ],
     specialEffect: 'gold_glow'
   },
 
   // ==========================================
-  // 第二部分：終章 - 情感與抉擇
-  // 教學目標：勸君更盡一杯酒 (成長思維抉擇)
-  // ==========================================
-  'act2_intro': {
-    id: 'act2_intro',
-    backgroundUrl: BG_INN_INTERIOR,
-    characterId: CharacterId.Narrator,
-    text: '【終章：最後的抉擇】\n課堂繼續。\n元二已經站起身，馬車就在門外等候。這是最後說話的機會了。',
-    choices: [
-      { id: 'continue_act2', text: '回到客棧', nextSceneId: 'act2_dialogue_1', isGrowthMindset: false }
-    ]
-  },
-
-  'act2_dialogue_1': {
-    id: 'act2_dialogue_1',
-    backgroundUrl: BG_INN_INTERIOR,
-    characterId: CharacterId.YuanEr,
-    text: '王維兄，酒已喝乾，我該走了。這一去，不知何年何月才能再見...',
-    choices: [
-      { id: 'c3_pour_wine', text: '端起酒壺，倒滿最後一杯酒', nextSceneId: 'act2_core_choice', isGrowthMindset: false }
-    ]
-  },
-
-  // 核心抉擇節點
-  'act2_core_choice': {
-    id: 'act2_core_choice',
-    backgroundUrl: BG_INN_INTERIOR,
-    characterId: CharacterId.WangWei,
-    text: '（你看著滿杯的酒，心裡五味雜陳。作為好朋友，這最後一句話該說什麼？）',
-    choices: [
-      { 
-        id: 'choice_fixed', 
-        text: '這一定是最後一杯了... 你走了就是永別了。以後再也沒人陪我喝酒了。', 
-        nextSceneId: 'bad_ending', 
-        isGrowthMindset: false 
-      },
-      { 
-        id: 'choice_growth', 
-        text: '來！為了我們的友誼，再乾一杯吧！雖然我們會分開，但我的心陪你一起去安西。祝你建功立業！', 
-        nextSceneId: 'good_ending', 
-        isGrowthMindset: true 
-      }
-    ]
-  },
-
-  // ==========================================
-  // 結局分支
+  // （已刪除王維與元二的互動結局與選擇）
   // ==========================================
 
-  // 壞結局
-  'bad_ending': {
-    id: 'bad_ending',
-    backgroundUrl: BG_BAD_ENDING,
-    characterId: CharacterId.Narrator,
-    text: '【結局：相忘於江湖】\n元二聽了你的話，帶著沉重的心情離開了。\n\n路途遙遠，因為離別時太過傷感，兩人都覺得這段友誼充滿了痛苦。漸漸地，聯繫越來越少。\n在遙遠的安西，元二常常感到孤獨；而王維也失去了一位最好的朋友。',
-    choices: [
-        { id: 'read_poem_bad', text: '回味這首詩', nextSceneId: 'poem_display_final', isGrowthMindset: false }
-    ], 
-    specialEffect: 'fade_black'
-  },
-
-  // 好結局
-  'good_ending': {
-    id: 'good_ending',
-    backgroundUrl: BG_GOOD_ENDING,
-    characterId: CharacterId.Narrator,
-    text: '【結局：天涯若比鄰】\n元二聽了你的話，感動地喝下這杯酒，帶著滿滿的勇氣踏上了旅程！\n\n雖然相隔萬里，但你們經常寫信分享生活。元二在安西努力工作。\n你們的友誼，因為這份祝福，變得更深厚、更牢固了。',
-    choices: [
-        { id: 'read_poem_good', text: '吟誦這首千古名詩', nextSceneId: 'poem_display_final', isGrowthMindset: false }
-    ], 
-    specialEffect: 'gold_glow'
-  },
-
-  // 最終詩詞展示 (修改連接點 -> 外篇)
+  // 最終詩詞展示 (直接接在序章之後)
   'poem_display_final': {
     id: 'poem_display_final',
     backgroundUrl: BG_POEM_SCROLL,

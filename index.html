@@ -86,26 +86,26 @@
       // ==========================================
       
       // 背景圖片資源
-      const BG_RAINY_CITY = '/bg_rain.jpg'; 
-      const BG_Desert = 'https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=1748&auto=format&fit=crop'; 
-      const BG_home = 'https://images.unsplash.com/photo-1561900077-7cb929361d51?q=80&w=1740&auto=format&fit=crop';
-      const BG_INN_WILLOW = 'https://i.pinimg.com/1200x/46/81/9c/46819cb679b43de42d214370bae222d6.jpg'; 
-      const BG_INN_INTERIOR = 'https://i.pinimg.com/1200x/3c/3d/18/3c3d18b5da538386f76c7db598f14713.jpg';
-      const BG_BAD_ENDING = 'https://i.pinimg.com/1200x/e8/a4/ad/e8a4ad5d7fc4e9c88f3db11ec555df28.jpg';
-      const BG_GOOD_ENDING = 'https://i.pinimg.com/1200x/f4/f7/cc/f4f7ccfd71187aea36bbd4dd992741ee.jpg';
-      const BG_POEM_SCROLL = 'https://i.pinimg.com/1200x/46/81/9c/46819cb679b43de42d214370bae222d6.jpg';
-      const BG_CLASSROOM = 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1932&auto=format&fit=crop'; 
+          const BG_RAINY_CITY = '/bg_rain.jpg'; 
+          const BG_Desert = 'https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=1748&auto=format&fit=crop'; 
+          const BG_home = 'https://images.unsplash.com/photo-1561900077-7cb929361d51?q=80&w=1740&auto=format&fit=crop';
+          const BG_INN_WILLOW = 'https://i.pinimg.com/1200x/46/81/9c/46819cb679b43de42d214370bae222d6.jpg'; 
+          const BG_INN_INTERIOR = 'https://i.pinimg.com/1200x/3c/3d/18/3c3d18b5da538386f76c7db598f14713.jpg';
+          const BG_BAD_ENDING = 'https://i.pinimg.com/1200x/e8/a4/ad/e8a4ad5d7fc4e9c88f3db11ec555df28.jpg';
+          const BG_GOOD_ENDING = 'https://i.pinimg.com/1200x/f4/f7/cc/f4f7ccfd71187aea36bbd4dd992741ee.jpg';
+          const BG_POEM_SCROLL = 'https://i.pinimg.com/1200x/46/81/9c/46819cb679b43de42d214370bae222d6.jpg';
+          const BG_CLASSROOM = 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1932&auto=format&fit=crop';  
 
       const CHARACTERS = {
         [CharacterId.WangWei]: {
           id: CharacterId.WangWei,
           name: '王維',
-          avatarUrl: '/wangwei.png' 
+          avatarUrl: 'https://i.pinimg.com/736x/8a/8a/90/8a8a906c9faabcbecd1c61acaf4022b6.jpg' 
         },
         [CharacterId.YuanEr]: {
           id: CharacterId.YuanEr,
           name: '元二',
-          avatarUrl: '/yuaner.png' 
+          avatarUrl: 'images/yuaner.png' 
         },
         [CharacterId.Player]: {
           id: CharacterId.Player,
@@ -129,7 +129,7 @@
           id: 'start',
           backgroundUrl: BG_RAINY_CITY,
           characterId: CharacterId.Narrator,
-          text: '【序章：雨晨】\n\n你扮演唐代詩人王維。過幾天，是你送別摯友元二的日子。',
+          text: '\n你扮演唐代詩人王維。過幾天，是你送別摯友元二的日子。',
           choices: [
             { id: 'start_act1', text: '開始故事', nextSceneId: 'intro_quiz_destination', isGrowthMindset: false }
           ],
@@ -139,10 +139,10 @@
           id: 'intro_quiz_destination',
           backgroundUrl: BG_home,
           characterId: CharacterId.WangWei,
-          text: '（我手裡拿著元二的信...）\n\n元二被皇上派去執行任務，這是一份榮耀，但也充滿挑戰。\n他要去哪裡任職呢？',
+          text: '（我手裡拿著元二的信...）\n\n元二要去哪裡任職呢？',
           choices: [
-            { id: 'q_dest_right', text: '去西邊的「安西都護府」', nextSceneId: 'intro_dest_right', isGrowthMindset: false },
-            { id: 'q_dest_wrong', text: '去南邊的「煙雨江南」', nextSceneId: 'intro_dest_wrong', isGrowthMindset: false }
+            { id: 'q_dest_right', text: '安西都護府', nextSceneId: 'intro_dest_right', isGrowthMindset: false },
+            { id: 'q_dest_wrong', text: '煙雨江南', nextSceneId: 'intro_dest_wrong', isGrowthMindset: false }
           ],
         },
         'intro_dest_wrong': {
@@ -158,7 +158,7 @@
           id: 'intro_dest_right',
           backgroundUrl: BG_Desert,
           characterId: CharacterId.WangWei,
-          text: '沒錯，就是安西。那裡離長安（西安）有幾千里遠，中間隔著大沙漠。\n這一去，不知何年何月才能再見面。',
+          text: '沒錯，就是安西。那裡離長安幾千里遠。這一去，不知何年何月才能再見面。',
           choices: [
             { id: 'next_quiz_loc', text: '思考送別地點...', nextSceneId: 'intro_quiz_location', isGrowthMindset: false }
           ],
@@ -167,10 +167,10 @@
           id: 'intro_quiz_location',
           backgroundUrl: BG_RAINY_CITY,
           characterId: CharacterId.WangWei,
-          text: '既然他要往西走，我應該在哪裡為他送行，才能表達我最大的心意呢？',
+          text: '我去哪裡送行，才能表達心意呢？',
           choices: [
-            { id: 'q_loc_right', text: '去「渭城」（咸陽），那是西行的起點', nextSceneId: 'intro_loc_right', isGrowthMindset: false },
-            { id: 'q_loc_wrong', text: '就在我家門口揮揮手就好', nextSceneId: 'intro_loc_wrong', isGrowthMindset: false }
+            { id: 'q_loc_right', text: '西行的起點：渭城', nextSceneId: 'intro_loc_right', isGrowthMindset: false },
+            { id: 'q_loc_wrong', text: '他家門口', nextSceneId: 'intro_loc_wrong', isGrowthMindset: false }
           ],
           specialEffect: 'rain'
         },
@@ -188,183 +188,20 @@
           id: 'intro_loc_right',
           backgroundUrl: BG_RAINY_CITY,
           characterId: CharacterId.WangWei,
-          text: '對！渭城是長安往西走的必經之路。出了渭城，就是荒涼的塞外了。\n\n我明早就趕到了客棧等他。',
+          text: '對！渭城是長安往西走的必經之路。',
           choices: [
-            { id: 'enter_inn', text: '走進客棧房間', nextSceneId: 'act1_dialogue_1', isGrowthMindset: false }
+            { id: 'enter_inn', text: '走進客棧房間', nextSceneId: 'act1_scenery_observe', isGrowthMindset: false }
           ],
           specialEffect: 'rain'
-        },
-        'act1_dialogue_1': {
-          id: 'act1_dialogue_1',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.YuanEr,
-          text: '（整理著行囊，轉過身來）\n王維兄，時候不早了，我就要出發去安西了。',
-          choices: [
-            { id: 'c1_reply', text: '回應元二', nextSceneId: 'act1_dialogue_2', isGrowthMindset: false }
-          ],
-        },
-        'act1_dialogue_2': {
-          id: 'act1_dialogue_2',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.WangWei,
-          text: '我知道。路途遙遠又危險，你要多多保重啊。',
-          choices: [
-            { id: 'c2_next', text: '聽元二説...', nextSceneId: 'act1_location_quiz', isGrowthMindset: false }
-          ],
-        },
-        'act1_location_quiz': {
-          id: 'act1_location_quiz',
-          backgroundUrl:BG_INN_INTERIOR,
-          characterId: CharacterId.YuanEr,
-          text: '多謝王維兄特地送到這裡。渭城（咸陽）離長安（西安）也不近。你爲什麼要送我到渭城呢？',
-          choices: [
-            { 
-              id: 'q1_right', 
-              text: '這裡是往西走的起點，出了這裡，就要離開我們熟悉的中原了。', 
-              nextSceneId: 'act1_location_right', 
-              isGrowthMindset: false
-            },
-            { 
-              id: 'q1_wrong', 
-              text: '渭城風景優美，我順路過來看看。', 
-              nextSceneId: 'act1_location_wrong', 
-              isGrowthMindset: false 
-            }
-          ],
-        },
-        'act1_location_wrong': {
-          id: 'act1_location_wrong',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.YuanEr,
-          text: '（愣了一下）呃... 我看周圍很多送別的人，這裏應該是人們習慣最後送別的地方吧。',
-          choices: [
-            { id: 'q1_retry', text: '好像是喔', nextSceneId: 'act1_location_right', isGrowthMindset: false }
-          ],
-
-        },
-        'act1_location_right': {
-          id: 'act1_location_right',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.YuanEr,
-          text: '（有些感傷）出了陽關，往西走就真的是完全陌生的世界了。',
-          choices: [
-            { id: 'to_scenery', text: '看向窗外', nextSceneId: 'act1_scenery_observe', isGrowthMindset: false }
-          ],
         },
         'act1_scenery_observe': {
           id: 'act1_scenery_observe',
           backgroundUrl: BG_INN_WILLOW,
           characterId: CharacterId.WangWei,
-          text: '（你看向窗外）\n看，今天早上的雨把路上的灰塵都洗乾淨了（浥輕塵），客棧旁邊的柳樹經過雨水沖洗，顏色看起來特別清新（柳色新）。',
+          text: '（你看向窗外）\n看，今天早上的雨把路上的灰塵都洗乾淨了，客棧旁邊的柳樹經過雨水沖洗，顏色看起來特別清新。',
           choices: [
-            { id: 'scenery_reply', text: '等待元二回應', nextSceneId: 'act1_scenery_quiz', isGrowthMindset: false }
+            { id: 'scenery_reply', text: '不如寫一首詩送給元二吧', nextSceneId: 'poem_display_final', isGrowthMindset: false }
           ]
-        },
-        'act1_scenery_quiz': {
-          id: 'act1_scenery_quiz',
-          backgroundUrl: BG_INN_WILLOW,
-          characterId: CharacterId.YuanEr,
-          text: '這柳樹真綠啊... 讓我想起以前我們在長安的日子。王維兄，你看這景色怎麼樣？',
-          choices: [
-            { 
-              id: 'q2_wrong', 
-              text: '下雨天到處濕答答的，踩得滿腳泥，真麻煩。', 
-              nextSceneId: 'act1_scenery_wrong', 
-              isGrowthMindset: false 
-            },
-            { 
-              id: 'q2_right', 
-              text: '這景色很美，但也讓我覺得更加捨不得你。柳樹青青，像是在挽留你一樣。', 
-              nextSceneId: 'act1_scenery_right', 
-              isGrowthMindset: false 
-            }
-          ]
-        },
-        'act1_scenery_wrong': {
-          id: 'act1_scenery_wrong',
-          backgroundUrl: BG_INN_WILLOW,
-          characterId: CharacterId.YuanEr,
-          text: '這... 我們即將分別，王維兄怎麼只在意腳下的泥土呢？',
-          choices: [
-            { id: 'q2_retry', text: '重新觀察並表達情感', nextSceneId: 'act1_scenery_quiz', isGrowthMindset: false }
-          ]
-        },
-        'act1_scenery_right': {
-          id: 'act1_scenery_right',
-          backgroundUrl: BG_INN_WILLOW,
-          characterId: CharacterId.YuanEr,
-          text: '（感動地看著你）知我者，王維兄也。這風景，讓我更捨不得離開啊。唉！',
-          choices: [
-            { id: 'prologue_done', text: '隨從催促出發...', nextSceneId: 'prologue_end', isGrowthMindset: false }
-          ]
-        },
-        'prologue_end': {
-          id: 'prologue_end',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.Narrator,
-          text: '【🎉 序章已通關】\n你已經回顧了送別的背景與景物：\n「渭城朝雨浥輕塵，客舍青青柳色新」\n\n最後的時刻到了，王維會對元二説什麼呢？\n（請先暫停遊戲，等待老師講課）',
-          choices: [
-            { id: 'pause_game', text: '繼續遊戲', nextSceneId: 'act2_intro', isGrowthMindset: false }
-          ],
-          specialEffect: 'gold_glow'
-        },
-        'act2_intro': {
-          id: 'act2_intro',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.Narrator,
-          text: '【終章：最後的抉擇】\n課堂繼續。\n元二已經站起身，馬車就在門外等候。這是最後説話的機會了。',
-          choices: [
-            { id: 'continue_act2', text: '回到客棧', nextSceneId: 'act2_dialogue_1', isGrowthMindset: false }
-          ]
-        },
-        'act2_dialogue_1': {
-          id: 'act2_dialogue_1',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.YuanEr,
-          text: '王維兄，酒已喝乾，我該走了。這一去，不知何年何月才能再見...',
-          choices: [
-            { id: 'c3_pour_wine', text: '端起酒壺，倒滿最後一杯酒', nextSceneId: 'act2_core_choice', isGrowthMindset: false }
-          ]
-        },
-        'act2_core_choice': {
-          id: 'act2_core_choice',
-          backgroundUrl: BG_INN_INTERIOR,
-          characterId: CharacterId.WangWei,
-          text: '（你看著滿杯的酒，心裡五味雜陳。作為好朋友，這最後一句話該説什麼？）',
-          choices: [
-            { 
-              id: 'choice_fixed', 
-              text: '這一定是最後一杯了... 你走了就是永別了。以後再也沒人陪我喝酒了。', 
-              nextSceneId: 'bad_ending', 
-              isGrowthMindset: false 
-            },
-            { 
-              id: 'choice_growth', 
-              text: '來！為了我們的友誼，再乾一杯吧！雖然我們會分開，但我的心陪你一起去安西。祝你建功立業！', 
-              nextSceneId: 'good_ending', 
-              isGrowthMindset: true 
-            }
-          ]
-        },
-        'bad_ending': {
-          id: 'bad_ending',
-          backgroundUrl: BG_BAD_ENDING,
-          characterId: CharacterId.Narrator,
-          text: '【結局：相忘於江湖】\n元二聽了你的話，帶著沉重的心情離開了。\n\n路途遙遠，因為離別時太過傷感，兩人都覺得這段友誼充滿了痛苦。漸漸地，聯繫越來越少。\n在遙遠的安西，元二常常感到孤獨；而王維也失去了一位最好的朋友。',
-          choices: [
-              { id: 'read_poem_bad', text: '回味這首詩', nextSceneId: 'poem_display_final', isGrowthMindset: false }
-          ], 
-          specialEffect: 'fade_black'
-        },
-        'good_ending': {
-          id: 'good_ending',
-          backgroundUrl: BG_GOOD_ENDING,
-          characterId: CharacterId.Narrator,
-          text: '【結局：天涯若比鄰】\n元二聽了你的話，感動地喝下這杯酒，帶著滿滿的勇氣踏上了旅程！\n\n雖然相隔萬里，但你們經常寫信分享生活。元二在安西努力工作。\n你們的友誼，因為這份祝福，變得更深厚、更牢固了。',
-          choices: [
-              { id: 'read_poem_good', text: '吟誦這首千古名詩', nextSceneId: 'poem_display_final', isGrowthMindset: false }
-          ], 
-          specialEffect: 'gold_glow'
         },
         'poem_display_final': {
           id: 'poem_display_final',
@@ -380,7 +217,7 @@
           id: 'epilogue_start',
           backgroundUrl: BG_CLASSROOM,
           characterId: CharacterId.Narrator,
-          text: '時光飛逝，畫面漸漸模糊...\n\n當你再次睜開眼時，你發現自己正坐在李金小學的課室裡。\n剛剛那場唐代的送別，似乎只是一場生動的課堂體驗。',
+          text: '時光飛逝，畫面漸漸模糊...\n\n當你再次睜開眼時，你發現自己正坐在李金小學的課室裡。',
           choices: [
             { id: 'epi_look_around', text: '看向旁邊的同學', nextSceneId: 'epilogue_dialogue_1', isGrowthMindset: false }
           ]
@@ -398,7 +235,7 @@
           id: 'epilogue_dialogue_2',
           backgroundUrl: BG_CLASSROOM,
           characterId: CharacterId.XiaoMing,
-          text: '剛才老師講了王維和元二的故事，很感人，讓我想到了我們。\n\n快畢業了，大家都分派到不同的中學。想到要和好朋友分開，去一個完全陌生的新學校，我就覺得好害怕，好捨不得。',
+          text: '剛才老師講了王維和元二的故事，很感人，讓我想到了我們。\n\n快畢業了，大家都分派到不同的中學。想到要和好朋友分開，我就很捨不得大家。',
           choices: [
             { id: 'epi_comfort_intro', text: '（運用剛才學到的成長思維安慰他）', nextSceneId: 'epilogue_core_choice', isGrowthMindset: false }
           ]
@@ -437,7 +274,7 @@
           id: 'epilogue_good',
           backgroundUrl: BG_CLASSROOM,
           characterId: CharacterId.XiaoMing,
-          text: '（小明抬起頭，眼睛亮了起來）\n你説得對！王維他們隔著沙漠都能做朋友，我們現在還有手機呢！\n\n謝謝你，我現在覺得去新中學也沒那麼可怕了，那是我建立新「功業」的地方！',
+          text: '（小明抬起頭，眼睛亮了起來）\n你説得對！王維他們隔著沙漠都能做朋友，我們現在還有手機呢！\n\n謝謝你，我現在覺得去新中學也沒那麼可怕了。',
           choices: [
             { id: 'the_end', text: '【全劇終】重新開始', nextSceneId: 'start', isGrowthMindset: false }
           ],
@@ -458,7 +295,7 @@
             {/* Background Layer */}
             <div 
               className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-1000 ease-in-out transform scale-105"
-              style={{ backgroundImage: `url(${backgroundUrl})` }}
+              style={{ backgroundImage: `url(${backgroundUrl})` }} // Reverted to backgroundImage for safer handling of both URLs and paths
             >
               <div className="absolute inset-0 bg-black/40" />
             </div>
